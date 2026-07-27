@@ -32,7 +32,7 @@ app.include_router(user.router)
 
 @app.get("/") 
 def get_user(): 
-    return {"message": "welcome to my api"} 
+    return {"message": "oh Yeahhhhhh"} 
 
 
 
