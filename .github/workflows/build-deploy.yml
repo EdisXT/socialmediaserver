@@ -86,7 +86,7 @@ jobs:
           script: |
             cd app/src
             git pull
-            sudo systemctl restart api
+            echo ${{ secrets.PROD_PASSWORD }} | sudo -S systemctl restart api
 #log into our ubuntu server
 #cd /app/arc
 #git pull
