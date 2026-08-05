@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from . import models
 from .database import engine, get_db
@@ -30,7 +30,7 @@ app.include_router(post.router)
 app.include_router(user.router)
 
 
-@app.get("/") 
+@app.get("/", status_code=status.HTTP_200_OK) 
 def get_user(): 
     return {"message": "oh Yeahhhhhh"} 
 
