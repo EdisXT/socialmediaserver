@@ -32,7 +32,11 @@ app.include_router(user.router)
 
 @app.get("/", status_code=status.HTTP_200_OK) 
 def get_user(): 
-    return {"message": "oh Yeahhhhhh"} 
+    return {
+        "name": "Emberly Life API",
+        "status": "online",
+        "version": "1.0.0"
+    }
 
 
 
