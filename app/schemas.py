@@ -8,6 +8,7 @@ class PostBase(BaseModel):
     content: str
     country: Optional[str] = None
     city: Optional[str] = None
+    trip_type: Optional[str] = None
     published: bool = True
 
 class PostCreate(PostBase):

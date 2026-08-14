@@ -16,6 +16,7 @@ class Post(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     country = Column(String, nullable=True)
     city = Column(String, nullable=True)
+    trip_type = Column(String, nullable=True)
 
     owner = relationship("User")
 
