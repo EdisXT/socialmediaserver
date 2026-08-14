@@ -6,6 +6,8 @@ from pydantic import Field
 class PostBase(BaseModel):
     title: str
     content: str
+    country: Optional[str] = None
+    city: Optional[str] = None
     published: bool = True
 
 class PostCreate(PostBase):
