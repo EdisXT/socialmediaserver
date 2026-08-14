@@ -53,6 +53,6 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: int
 
-class Vote(BaseModel):
+class Like(BaseModel):
     post_id: int
     dir: Annotated[int, Field(le=1)]
