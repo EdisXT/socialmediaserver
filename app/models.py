@@ -27,6 +27,7 @@ class User(Base):
     username = Column(String, unique=True, nullable=True)
     bio = Column(String, nullable=True)
     profile_picture = Column(String, nullable=True)
+    home_country = Column(String, nullable=True)
     password = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 

@@ -20,6 +20,7 @@ class UserOut(BaseModel):
     username: Optional[str] = None
     bio: Optional[str] = None
     profile_picture: Optional[str] = None
+    home_country: Optional[str] = None
     created_at: datetime
 
     class Config:
@@ -50,6 +51,7 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     bio: Optional[str] = None
     profile_picture: Optional[str] = None
+    home_country: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
