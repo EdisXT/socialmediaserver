@@ -17,7 +17,9 @@ class PostCreate(PostBase):
 class UserOut(BaseModel):
     id: int
     email: str
-    username: str
+    username: Optional[str] = None
+    bio: Optional[str] = None
+    profile_picture: Optional[str] = None
     created_at: datetime
 
     class Config:
@@ -44,7 +46,11 @@ class UserCreate(BaseModel):
     username: str
     password: str
 
-     
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    bio: Optional[str] = None
+    profile_picture: Optional[str] = None
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
