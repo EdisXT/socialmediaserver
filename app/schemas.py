@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from datetime import datetime, date
 from typing import Annotated, Optional
 from pydantic import Field
+from pydantic import model_validator
 
 class PostBase(BaseModel):
     title: str
@@ -9,7 +10,16 @@ class PostBase(BaseModel):
     country: Optional[str] = None
     city: Optional[str] = None
     trip_type: Optional[str] = None
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
     published: bool = True
+
+    @model_validator(mode="after")
+    def validate_dates(self):
+        if self.start_date and self.end_date and self.end_date < self.start_date:
+            raise ValueError("end_date cannot be before start_date")
+
+        return self
 
 class PostCreate(PostBase):
     pass
@@ -38,6 +48,21 @@ class Post(PostBase):
 class PostOut(BaseModel):
     Post: Post
     votes: int
+
+    class Config:
+        orm_mode = True
+
+class CommentCreate(BaseModel):
+    content: str
+    post_id: int
+
+
+class CommentOut(BaseModel):
+    id: int
+    content: str
+    user_id: int
+    post_id: int
+    created_at: datetime
 
     class Config:
         orm_mode = True
