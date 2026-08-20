@@ -95,3 +95,6 @@ class TokenData(BaseModel):
 class Like(BaseModel):
     post_id: int
     dir: Annotated[int, Field(le=1)]
+
+class BookmarkCreate(BaseModel):
+    post_id: int
