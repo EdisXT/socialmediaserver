@@ -52,8 +52,38 @@ def get_my_bookmarks(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user)
 ):
-    bookmarks = db.query(models.Bookmark).filter(
-        models.Bookmark.user_id == current_user.id
-    ).all()
+    saved_posts = (
+        db.query(models.Post)
+        .join(
+            models.Bookmark,
+            models.Bookmark.post_id == models.Post.id
+        )
+        .filter(
+            models.Bookmark.user_id == current_user.id
+        )
+        .all()
+    )
 
-    return bookmarks
+    return saved_posts
+
+@router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_bookmark(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    bookmark_query = db.query(models.Bookmark).filter(
+        models.Bookmark.post_id == post_id,
+        models.Bookmark.user_id == current_user.id
+    )
+
+    bookmark = bookmark_query.first()
+
+    if not bookmark:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Bookmark does not exist"
+        )
+
+    bookmark_query.delete(synchronize_session=False)
+    db.commit()
