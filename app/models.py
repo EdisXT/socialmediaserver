@@ -52,7 +52,7 @@ class Vote(Base):
 
 class Bookmark(Base):
     __tablename__ = "bookmarks"
-    
+
     user_id = Column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
@@ -64,3 +64,17 @@ class Bookmark(Base):
         ForeignKey("posts.id", ondelete="CASCADE"),
         primary_key=True
     )
+
+class Tag(Base):
+    __tablename__ = "tags"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False, unique=True)
+
+class PostTag(Base):
+    __tablename__ = "post_tags"
+
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), primary_key=True)
+
+    tag_id = Column(Integer, ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True)
+

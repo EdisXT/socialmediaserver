@@ -98,3 +98,7 @@ class Like(BaseModel):
 
 class BookmarkCreate(BaseModel):
     post_id: int
+
+class PostTagCreate(BaseModel):
+    post_id: int
+    tag_id: int

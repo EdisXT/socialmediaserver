@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import date
 from .. import models, schemas, oauth2
 from ..database import get_db
-from sqlalchemy import func
+from sqlalchemy import func, or_
         
 router = APIRouter(
     prefix="/posts",
@@ -31,7 +31,8 @@ def get_posts(
     city: Optional[str] = None,
     trip_type: Optional[str] = None,
     start_date: Optional[date] = None,
-    end_date: Optional[date] = None
+    end_date: Optional[date] = None,
+    sort: Optional[str] = "newest"
 ):
 
     query = db.query(
@@ -44,8 +45,13 @@ def get_posts(
     ).group_by(
         models.Post.id
     ).filter(
-        models.Post.title.contains(search)
+    or_(
+        models.Post.title.ilike(f"%{search}%"),
+        models.Post.country.ilike(f"%{search}%"),
+        models.Post.city.ilike(f"%{search}%")
     )
+)
+    
 
     if country:
         query = query.filter(models.Post.country.ilike(country))
@@ -61,6 +67,13 @@ def get_posts(
 
     if end_date:
         query = query.filter(models.Post.end_date <= end_date)
+
+    if sort == "oldest":
+        query = query.order_by(models.Post.created_at.asc())
+    elif sort == "most_liked":
+        query = query.order_by(func.count(models.Vote.post_id).desc())
+    else:
+        query = query.order_by(models.Post.created_at.desc())
 
     posts = query.limit(limit).offset(skip).all()
 
