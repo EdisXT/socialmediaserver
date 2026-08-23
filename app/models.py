@@ -19,8 +19,12 @@ class Post(Base):
     trip_type = Column(String, nullable=True)
     start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True)
+    image_url = Column(String, nullable=True)
 
     owner = relationship("User")
+    images = relationship("PostImage", 
+                          back_populates="post",
+                          cascade="all, delete-orphan")
 
 class User(Base):
     __tablename__ = "users"
@@ -78,3 +82,14 @@ class PostTag(Base):
 
     tag_id = Column(Integer, ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True)
 
+class PostImage(Base):
+    __tablename__ = "post_images"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+
+    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False)
+
+    image_url = Column(String, nullable=False)
+
+    post = relationship("Post", 
+                        back_populates="images")

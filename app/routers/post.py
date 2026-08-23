@@ -52,7 +52,6 @@ def get_posts(
     )
 )
     
-
     if country:
         query = query.filter(models.Post.country.ilike(country))
 
@@ -78,6 +77,24 @@ def get_posts(
     posts = query.limit(limit).offset(skip).all()
 
     return posts
+
+@router.get('/{id}', response_model=schemas.Post)
+def get_post(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    post = db.query(models.Post).filter(
+        models.Post.id == id
+    ).first()
+
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} does not exist"
+        )
+
+    return post
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db : Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)): 
@@ -110,3 +127,82 @@ def update_post(id: int, updated_post: schemas.PostCreate, db : Session = Depend
     db.commit()
 
     return post_query.first()
+
+@router.post("/{post_id}/images", status_code=status.HTTP_201_CREATED)
+def add_post_image(
+    post_id: int,
+    image: schemas.PostImageCreate,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    post = db.query(models.Post).filter(
+        models.Post.id == post_id
+    ).first()
+
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Post does not exist"
+        )
+
+    if post.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to add images to this post"
+    )
+
+    new_image = models.PostImage(
+    post_id=post_id,
+    image_url=image.image_url
+)
+
+    db.add(new_image)
+    db.commit()
+    db.refresh(new_image)
+
+    return new_image
+
+@router.get("/{post_id}/images")
+def get_post_images(
+    post_id: int,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    images = db.query(models.PostImage).filter(
+        models.PostImage.post_id == post_id
+    ).all()
+
+    return images
+
+@router.delete("/{post_id}/images/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post_image(
+    post_id: int,
+    image_id: int,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    image = db.query(models.PostImage).filter(
+        models.PostImage.id == image_id,
+        models.PostImage.post_id == post_id
+    ).first()
+
+    if not image:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Image does not exist for this post"
+        )
+
+    post = db.query(models.Post).filter(
+    models.Post.id == post_id
+).first()
+
+    if post.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to delete images from this post"
+    )
+
+    db.delete(image)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

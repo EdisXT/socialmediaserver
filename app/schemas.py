@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, date
 from typing import Annotated, Optional
@@ -12,6 +13,7 @@ class PostBase(BaseModel):
     trip_type: Optional[str] = None
     start_date: Optional[date] = None
     end_date: Optional[date] = None
+    image_url: Optional[str] = None
     published: bool = True
 
     @model_validator(mode="after")
@@ -36,11 +38,19 @@ class UserOut(BaseModel):
     class Config:
         orm_mode = True
 
+class PostImageOut(BaseModel):
+    id: int
+    image_url: str
+
+    class Config:
+        orm_mode = True
+
 class Post(PostBase):
     id: int
     created_at: datetime
     user_id: int
     owner: UserOut
+    images: List[PostImageOut] = []
 
     class Config:
         orm_mode = True
@@ -102,3 +112,7 @@ class BookmarkCreate(BaseModel):
 class PostTagCreate(BaseModel):
     post_id: int
     tag_id: int
+
+class PostImageCreate(BaseModel):
+    image_url: str
+
