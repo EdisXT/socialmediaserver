@@ -1,9 +1,7 @@
-from typing import List
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, model_validator
 from datetime import datetime, date
-from typing import Annotated, Optional
-from pydantic import Field
-from pydantic import model_validator
+from typing import Annotated, Optional, List
+
 
 class PostBase(BaseModel):
     title: str
@@ -35,32 +33,54 @@ class UserOut(BaseModel):
     home_country: Optional[str] = None
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+}
+
+class UserPublic(BaseModel):
+    id: int
+    username: Optional[str] = None
+    profile_picture: Optional[str] = None
+
+    model_config = {
+        "from_attributes": True
+    }
 
 class PostImageOut(BaseModel):
     id: int
     image_url: str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+}
+
+class TagOut(BaseModel):
+    id: int
+    name: str
+
+    model_config = {
+        "from_attributes": True
+}
 
 class Post(PostBase):
     id: int
     created_at: datetime
     user_id: int
-    owner: UserOut
+    owner: UserPublic
     images: List[PostImageOut] = []
+    tags: List[TagOut] = []
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+}
 
 class PostOut(BaseModel):
     Post: Post
     votes: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+}
 
 class CommentCreate(BaseModel):
     content: str
@@ -76,9 +96,11 @@ class CommentOut(BaseModel):
     user_id: int
     post_id: int
     created_at: datetime
+    owner: UserPublic
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+}
 
 class UserCreate(BaseModel):
     email: EmailStr

@@ -25,6 +25,10 @@ class Post(Base):
     images = relationship("PostImage", 
                           back_populates="post",
                           cascade="all, delete-orphan")
+    tags = relationship("Tag",
+                        secondary="post_tags",
+                        back_populates="posts"
+                        )
 
 class User(Base):
     __tablename__ = "users"
@@ -47,7 +51,9 @@ class Comment(Base):
     TIMESTAMP(timezone=True),
     nullable=False,
     server_default=text('now()')
+
 )
+    owner = relationship("User")
 
 class Vote(Base):
     __tablename__ = "votes"
@@ -74,6 +80,11 @@ class Tag(Base):
 
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False, unique=True)
+
+    posts = relationship("Post",
+                         secondary="post_tags",
+                         back_populates="tags"
+                         )
 
 class PostTag(Base):
     __tablename__ = "post_tags"
