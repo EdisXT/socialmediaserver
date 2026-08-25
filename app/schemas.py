@@ -46,6 +46,16 @@ class UserPublic(BaseModel):
         "from_attributes": True
     }
 
+class UserProfile(BaseModel):
+    id: int
+    username: Optional[str] = None
+    bio: Optional[str] = None
+    profile_picture: Optional[str] = None
+    home_country: Optional[str] = None
+    followers_count: int
+    following_count: int
+    is_following: bool
+
 class PostImageOut(BaseModel):
     id: int
     image_url: str

@@ -78,6 +78,37 @@ def get_posts(
 
     return posts
 
+@router.get('/feed', response_model=List[schemas.PostOut])
+def get_feed(
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user),
+    limit: int = 10,
+    skip: int = 0
+):
+    followed_user_ids = db.query(models.Follow.following_id).filter(
+    models.Follow.follower_id == current_user.id
+)
+
+    posts = db.query(
+    models.Post,
+    func.count(models.Vote.post_id).label("votes")
+).join(
+    models.Vote,
+    models.Vote.post_id == models.Post.id,
+    isouter=True
+).filter(
+    or_(
+        models.Post.user_id.in_(followed_user_ids),
+        models.Post.user_id == current_user.id
+    )
+).group_by(
+    models.Post.id
+).order_by(
+    models.Post.created_at.desc()
+).limit(limit).offset(skip).all()
+
+    return posts
+
 @router.get('/{id}', response_model=schemas.Post)
 def get_post(
     id: int,

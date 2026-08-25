@@ -104,3 +104,12 @@ class PostImage(Base):
 
     post = relationship("Post", 
                         back_populates="images")
+
+class Follow(Base):
+    __tablename__ = "follows"
+
+    follower_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
+                         primary_key=True)
+
+    following_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
+                          primary_key=True)
