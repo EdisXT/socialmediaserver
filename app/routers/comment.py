@@ -30,6 +30,16 @@ def create_comment(
         user_id=current_user.id
     )
 
+    if post.user_id != current_user.id:
+        new_notification = models.Notification(
+            user_id = post.user_id,
+            actor_id = current_user.id,
+            type="comment",
+            post_id = post.id
+        )
+
+        db.add(new_notification)
+
     db.add(new_comment)
     db.commit()
     db.refresh(new_comment)

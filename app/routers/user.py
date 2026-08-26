@@ -91,6 +91,18 @@ def follow_user(
         following_id=user_id
     ) 
 
+    new_notification = models.Notification(
+    user_id=user_id,
+    actor_id=current_user.id,
+    type="follow"
+)
+
+    db.add(new_follow)
+    db.add(new_notification)
+    db.commit()
+
+    return {"message": "User followed sucessfully"}
+
     db.add(new_follow)
     db.commit()
 

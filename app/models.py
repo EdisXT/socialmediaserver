@@ -113,3 +113,46 @@ class Follow(Base):
 
     following_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
                           primary_key=True)
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    actor_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    type = Column(String, nullable=False)
+
+    post_id = Column(
+        Integer,
+        ForeignKey("posts.id", ondelete="CASCADE"),
+        nullable=True
+    )
+
+    is_read = Column(
+        Boolean,
+        nullable=False,
+        server_default="FALSE"
+    )
+
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("now()")
+    )
+
+    actor = relationship(
+    "User",
+    foreign_keys=[actor_id]
+)
+

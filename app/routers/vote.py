@@ -19,8 +19,18 @@ def like(like: schemas.Like, db: Session = Depends(database.get_db),
         if found_vote:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                                  detail=f"user {current_user.id} has already liked post {like.post_id}")
-        new_vote = models.Vote(post_id = like.post_id, user_id = current_user.id)
+        new_vote = models.Vote(post_id = like.post_id,
+                                user_id = current_user.id)
         db.add(new_vote)
+
+        if post.user_id != current_user.id:
+            new_notification = models.Notification(
+                user_id = post.user_id,
+                actor_id = current_user.id,
+                type="like",
+                post_id=post.id
+            )
+            db.add(new_notification)
         db.commit()
         return {'message': 'successfully added like'}
     else:

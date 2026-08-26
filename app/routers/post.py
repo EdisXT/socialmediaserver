@@ -13,7 +13,9 @@ router = APIRouter(
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
-def create_posts(post : schemas.PostCreate, db : Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def create_posts(post : schemas.PostCreate,
+                  db : Session = Depends(get_db),
+                    current_user: int = Depends(oauth2.get_current_user)):
     new_post = models.Post(user_id=current_user.id, **post.dict())
     db.add(new_post)
     db.commit()
@@ -37,7 +39,24 @@ def get_posts(
 
     query = db.query(
         models.Post,
-        func.count(models.Vote.post_id).label("votes")
+        func.count(models.Vote.post_id).label("votes"),
+        func.coalesce(
+            func.bool_or(
+                models.Vote.user_id == current_user.id
+            ),
+            False
+        ).label("is_liked"),
+        db.query(models.Bookmark).filter(
+            models.Bookmark.post_id == models.Post.id,
+            models.Bookmark.user_id == current_user.id
+        ).exist().label("is_bookmarked"),
+        db.query(func.count(models.Comment.id)).filter(
+    models.Comment.post_id == models.Post.id
+).scalar_subquery().label("comments_count"),
+db.query(models.Follow).filter(
+    models.Follow.follower_id == current_user.id,
+    models.Follow.following_id == models.Post.user_id
+).exists().label("is_following_owner")
     ).join(
         models.Vote,
         models.Vote.post_id == models.Post.id,
@@ -91,7 +110,25 @@ def get_feed(
 
     posts = db.query(
     models.Post,
-    func.count(models.Vote.post_id).label("votes")
+    func.count(models.Vote.post_id).label("votes"),
+    func.coalesce(
+        func.bool_or(models.Vote.user_id == current_user.id),
+        False
+    ).label("is_liked"),
+    db.query(models.Bookmark).filter(
+    models.Bookmark.post_id == models.Post.id,
+    models.Bookmark.user_id == current_user.id
+).exists().label("is_bookmarked"),
+
+db.query(func.count(models.Comment.id)).filter(
+    models.Comment.post_id == models.Post.id
+).scalar_subquery().label("comments_count"),
+
+db.query(models.Follow).filter(
+    models.Follow.follower_id == current_user.id,
+    models.Follow.following_id == models.Post.user_id
+).exists().label("is_following_owner")
+
 ).join(
     models.Vote,
     models.Vote.post_id == models.Post.id,
@@ -128,7 +165,9 @@ def get_post(
     return post
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db : Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)): 
+def delete_post(id: int,
+                 db : Session = Depends(get_db),
+                   current_user: int = Depends(oauth2.get_current_user)): 
     post_query = db.query(models.Post).filter(models.Post.id == id)
 
     post = post_query.first()
@@ -145,7 +184,10 @@ def delete_post(id: int, db : Session = Depends(get_db), current_user: int = Dep
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.put('/{id}', response_model=schemas.Post)
-def update_post(id: int, updated_post: schemas.PostCreate, db : Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def update_post(id: int,
+                 updated_post: schemas.PostCreate,
+                   db : Session = Depends(get_db),
+                     current_user: int = Depends(oauth2.get_current_user)):
     post_query = db.query(models.Post).filter(models.Post.id == id)
     post = post_query.first()
     if post == None:

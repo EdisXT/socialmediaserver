@@ -87,6 +87,10 @@ class Post(PostBase):
 class PostOut(BaseModel):
     Post: Post
     votes: int
+    is_liked: bool
+    is_bookmarked: bool
+    comments_count: int
+    is_following_owner: bool
 
     model_config = {
         "from_attributes": True
@@ -148,3 +152,16 @@ class PostTagCreate(BaseModel):
 class PostImageCreate(BaseModel):
     image_url: str
 
+class NotificationOut(BaseModel):
+    id: int
+    user_id: int
+    actor_id: int
+    type: str
+    post_id: Optional[int] = None
+    is_read: bool
+    created_at: datetime
+    actor: UserPublic
+
+    model_config = {
+        "from_attributes": True
+    }
