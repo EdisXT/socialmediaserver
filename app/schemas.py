@@ -165,3 +165,27 @@ class NotificationOut(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class MessageCreate(BaseModel):
+    receiver_id: int
+    content: str
+
+
+class MessageOut(BaseModel):
+    id: int
+    sender_id: int
+    receiver_id: int
+    content: str
+    is_read: bool
+    created_at: datetime
+
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class ConversationOut(BaseModel):
+    user: UserPublic
+    last_message: str
+    last_message_at: datetime
+    unread_count: int

@@ -156,3 +156,33 @@ class Notification(Base):
     foreign_keys=[actor_id]
 )
 
+class Message(Base):
+    __tablename__ = "messages"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+
+    sender_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    receiver_id = Column(
+        Integer,
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False
+    )
+
+    content = Column(String, nullable=False)
+
+    is_read = Column(
+        Boolean,
+        nullable=False,
+        server_default="FALSE"
+    )
+
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("now()")
+    )
