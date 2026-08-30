@@ -146,6 +146,40 @@ db.query(models.Follow).filter(
 
     return posts
 
+@router.get('/explore')
+def explore_posts(
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user),
+    limit: int = 20,
+    skip: int = 0
+):
+    results = db.query(
+        models.Post,
+        func.count(models.Vote.post_id).label("votes")
+    ).join(
+        models.Vote,
+        models.Vote.post_id == models.Post.id,
+        isouter=True
+    ).group_by(
+        models.Post.id
+    ).order_by(
+        models.Post.created_at.desc()
+    ).limit(
+        limit
+    ).offset(
+        skip
+    ).all()
+
+    posts = []
+
+    for post, votes in results:
+        posts.append({
+            "Post": post,
+            "votes": votes
+        })
+
+    return posts
+
 @router.get('/{id}', response_model=schemas.Post)
 def get_post(
     id: int,
@@ -279,3 +313,5 @@ def delete_post_image(
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+

@@ -138,6 +138,13 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: int
 
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+class ResetPassword(BaseModel):
+    token: str
+    new_password: str
+
 class Like(BaseModel):
     post_id: int
     dir: Annotated[int, Field(le=1)]

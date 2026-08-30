@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List
-from .. import models, schemas, utils, oauth2
+from .. import models, schemas, utils, oauth2, email_utils
 from ..database import get_db
 
 router = APIRouter(
@@ -11,14 +11,16 @@ router = APIRouter(
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
-def create_user(user: schemas.UserCreate, db : Session = Depends(get_db)):
-    existing_user = db.query(models.User).filter(models.User.email == user.email).first()
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    existing_user = db.query(models.User).filter(
+        models.User.email == user.email
+    ).first()
 
     if existing_user:
         raise HTTPException(
-        status_code=status.HTTP_409_CONFLICT,
-        detail="Email already registered"
-    )
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already registered"
+        )
 
     existing_username = db.query(models.User).filter(
         models.User.username == user.username
@@ -29,15 +31,94 @@ def create_user(user: schemas.UserCreate, db : Session = Depends(get_db)):
             status_code=status.HTTP_409_CONFLICT,
             detail="Username already taken"
         )
-    #hash the pasword - user.password
+
+    # Hash the password
     hashed_password = utils.hash(user.password)
     user.password = hashed_password
+
+    # Create the user
     new_user = models.User(**user.dict())
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
+    # Create verification token
+    verification_token = oauth2.create_email_verification_token(
+        new_user.id
+    )
+
+    # Send verification email
+    email_utils.send_verification_email(
+        new_user.email,
+        verification_token
+    )
+
     return new_user
 
+@router.get('/search', response_model=List[schemas.UserPublic])
+def search_users(
+    query: str,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    users = db.query(models.User).filter(
+    models.User.username.ilike(f"%{query}%")
+).limit(20).all()
+
+    return users
+
+@router.get('/suggestions', response_model=List[schemas.UserPublic])
+def get_user_suggestions(
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    following_ids = db.query(models.Follow.following_id).filter(
+    models.Follow.follower_id == current_user.id
+)
+    suggested_users = db.query(models.User).filter(
+    models.User.id != current_user.id,
+    ~models.User.id.in_(following_ids)
+).limit(10).all()
+
+    return suggested_users
+
+@router.get('/verify-email')
+def verify_email(
+    token: str,
+    db: Session = Depends(get_db)
+):
+    user_id = oauth2.verify_email_verification_token(token)
+
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired verification token"
+        )
+
+    user = db.query(models.User).filter(
+        models.User.id == user_id
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    if user.is_verified:
+        return {
+            "message": "Email is already verified"
+        }
+
+    user.is_verified = True
+
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "Email verified successfully"
+    }
 
 @router.get('/{id}', response_model=schemas.UserOut)
 def get_user(id: int, db : Session = Depends(get_db)):

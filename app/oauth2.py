@@ -15,6 +15,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login") #endpoint of our login en
 SECRET_KEY = settings.secret_key 
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+EMAIL_VERIFICATION_EXPIRE_MINUTES = 30
+PASSWORD_RESET_EXPIRE_MINUTES = 15
 
 def create_access_token(data: dict): #it has a payload so whatever data we want to encode we pass in data of type dict
     to_encode = data.copy() #make a copy of this data, we dont want to change it, want to make a copy of it and minipulate #some things without changing the original data
@@ -24,6 +26,82 @@ def create_access_token(data: dict): #it has a payload so whatever data we want 
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return encoded_jwt
+
+def create_email_verification_token(user_id: int):
+    expire = datetime.utcnow() + timedelta(
+        minutes=EMAIL_VERIFICATION_EXPIRE_MINUTES
+    )
+
+    payload = {
+        "user_id": user_id,
+        "type": "email_verification",
+        "exp": expire
+    }
+
+    token = jwt.encode(
+        payload,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    return token
+
+def create_password_reset_token(user_id: int):
+    expire = datetime.utcnow() + timedelta(
+        minutes=PASSWORD_RESET_EXPIRE_MINUTES
+    )
+
+    payload = {
+        "user_id": user_id,
+        "type": "password_reset",
+        "exp": expire
+    }
+
+    token = jwt.encode(
+        payload,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    return token
+
+def verify_password_reset_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        user_id = payload.get("user_id")
+        token_type = payload.get("type")
+
+        if user_id is None or token_type != "password_reset":
+            return None
+
+        return user_id
+
+    except JWTError:
+        return None
+
+def verify_email_verification_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        user_id = payload.get("user_id")
+        token_type = payload.get("type")
+
+        if user_id is None or token_type != "email_verification":
+            return None
+
+        return user_id
+
+    except JWTError:
+        return None
 
 def verify_access_token(token: str, credentials_exception):
     try:
