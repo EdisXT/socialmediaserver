@@ -9,12 +9,16 @@ services:
     environment:
       - DATABASE_HOSTNAME=postgres
       - DATABASE_PORT=5432
-      - DATABASE_PASSWORD=sienna
-      - DATABASE_NAME=socialmedia
-      - DATABASE_USERNAME=postgres
-      - SECRET_KEY=09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - FRONTEND_URL=http://127.0.0.1:5500
+      - API_URL=http://127.0.0.1:8000
     depends_on:
       - postgres
 
@@ -23,9 +27,9 @@ services:
     ports:
       - "5433:5432"
     environment:
-      - POSTGRES_PASSWORD=sienna
-      - POSTGRES_DB=socialmedia
-      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
     volumes:
       - postgres-db:/var/lib/postgresql/data
 

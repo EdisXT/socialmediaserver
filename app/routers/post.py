@@ -34,8 +34,15 @@ def get_posts(
     trip_type: Optional[str] = None,
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
-    sort: Optional[str] = "newest"
+    sort: Optional[str] = "newest",
+    user_id: Optional[int] = None
 ):
+
+    # Allow hashtag-style searches such as #hike
+    clean_search = search.strip()
+
+    if clean_search.startswith("#"):
+        clean_search = clean_search[1:]
 
     query = db.query(
         models.Post,
@@ -49,7 +56,7 @@ def get_posts(
         db.query(models.Bookmark).filter(
             models.Bookmark.post_id == models.Post.id,
             models.Bookmark.user_id == current_user.id
-        ).exist().label("is_bookmarked"),
+        ).exists().label("is_bookmarked"),
         db.query(func.count(models.Comment.id)).filter(
     models.Comment.post_id == models.Post.id
 ).scalar_subquery().label("comments_count"),
@@ -65,12 +72,23 @@ db.query(models.Follow).filter(
         models.Post.id
     ).filter(
     or_(
-        models.Post.title.ilike(f"%{search}%"),
-        models.Post.country.ilike(f"%{search}%"),
-        models.Post.city.ilike(f"%{search}%")
+        models.Post.title.ilike(f"%{clean_search}%"),
+        models.Post.content.ilike(f"%{clean_search}%"),
+        models.Post.country.ilike(f"%{clean_search}%"),
+        models.Post.city.ilike(f"%{clean_search}%"),
+        models.Post.trip_type.ilike(f"%{clean_search}%"),
+        models.Post.tags.any(
+            models.Tag.name.ilike(
+                f"%{clean_search}%"
+            )
+        )
     )
 )
-    
+    if user_id:
+        query = query.filter(
+            models.Post.user_id == user_id
+    )
+
     if country:
         query = query.filter(models.Post.country.ilike(country))
 
@@ -78,7 +96,11 @@ db.query(models.Follow).filter(
         query = query.filter(models.Post.city.ilike(city))
 
     if trip_type:
-        query = query.filter(models.Post.trip_type.ilike(trip_type))
+        query = query.filter(
+            models.Post.trip_type.ilike(
+                f"%{trip_type}%"
+        )
+    )
 
     if start_date:
         query = query.filter(models.Post.start_date >= start_date)

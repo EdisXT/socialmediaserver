@@ -120,6 +120,12 @@ def verify_email(
         "message": "Email verified successfully"
     }
 
+@router.get('/me', response_model=schemas.UserOut)
+def get_current_user_profile(
+    current_user: int = Depends(oauth2.get_current_user)
+):
+    return current_user
+
 @router.get('/{id}', response_model=schemas.UserOut)
 def get_user(id: int, db : Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id==id).first()
@@ -184,10 +190,7 @@ def follow_user(
 
     return {"message": "User followed sucessfully"}
 
-    db.add(new_follow)
-    db.commit()
 
-    return {"message": "User followed sucessfully"}
 
 @router.delete('/{user_id}/follow', status_code=status.HTTP_204_NO_CONTENT)
 def unfollow_user(

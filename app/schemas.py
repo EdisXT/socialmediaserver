@@ -190,6 +190,10 @@ class MessageOut(BaseModel):
         "from_attributes": True
     }
 
+class ConversationHistory(BaseModel):
+    messages: List[MessageOut]
+    first_unread_message_id: Optional[int] = None
+
 
 class ConversationOut(BaseModel):
     user: UserPublic

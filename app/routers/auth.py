@@ -26,6 +26,38 @@ def login(user_credentials : OAuth2PasswordRequestForm = Depends(), db : Session
     access_token = oauth2.create_access_token(data= {"user_id": user.id})
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.post('/resend-verification')
+def resend_verification(
+    request: schemas.ForgotPassword,
+    db: Session = Depends(database.get_db)
+):
+    user = db.query(models.User).filter(
+        models.User.email == request.email
+    ).first()
+
+    if not user:
+        return {
+            "message": "If an unverified account with that email exists, a verification email has been sent"
+        }
+
+    if user.is_verified:
+        return {
+            "message": "This email is already verified. You can log in."
+        }
+
+    verification_token = oauth2.create_email_verification_token(
+        user.id
+    )
+
+    email_utils.send_verification_email(
+        user.email,
+        verification_token
+    )
+
+    return {
+        "message": "Verification email sent. Check your inbox."
+    }
+
 @router.post('/forgot-password')
 def forgot_password(
     request: schemas.ForgotPassword,

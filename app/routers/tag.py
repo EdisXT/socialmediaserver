@@ -17,21 +17,26 @@ def create_tag(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user)
 ):
+
     existing_tag = db.query(models.Tag).filter(
         models.Tag.name.ilike(name)
     ).first()
 
-    if existing_tag:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Tag already exists"
-        )
 
-    new_tag = models.Tag(name=name)
+    # If tag already exists, just return it
+    if existing_tag:
+        return existing_tag
+
+
+    new_tag = models.Tag(
+        name=name.lower().strip()
+    )
+
 
     db.add(new_tag)
     db.commit()
     db.refresh(new_tag)
+
 
     return new_tag
 

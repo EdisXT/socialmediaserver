@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vortex</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ========================= -->
+    <!-- VORTEX SIDEBAR -->
+    <!-- ========================= -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <h1>Vortex</h1>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <button class="nav-button active" data-view="home">
+                <span class="nav-icon">⌂</span>
+                <span>Home</span>
+            </button>
+
+            <button class="nav-button" data-view="explore">
+                <span class="nav-icon">⌕</span>
+                <span>Explore</span>
+            </button>
+
+            <button class="nav-button" data-view="messages">
+                <span class="nav-icon">✉</span>
+                <span>Messages</span>
+            </button>
+
+            <button class="nav-button" data-view="notifications">
+                <span class="nav-icon">♡</span>
+                <span>Notifications</span>
+
+                <span id="sidebar-notification-count" class="notification-badge">
+                    0
+                </span>
+            </button>
+
+            <button class="nav-button" id="open-create-post-button" type="button">
+                <span class="nav-icon">＋</span>
+                <span>Create</span>
+            </button>
+
+            <button class="nav-button" data-view="profile">
+                <span class="nav-icon">◎</span>
+                <span>Profile</span>
+            </button>
+
+            <button class="nav-button" data-view="saved">
+                <span class="nav-icon">▱</span>
+                <span>Saved</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button id="theme-toggle-button" class="sidebar-nav-button" type="button">
+                <span class="sidebar-icon">☾</span>
+                <span>Dark Mode</span>
+            </button>
+
+            <button class="nav-button" id="sidebar-logout-button" type="button">
+                <span class="nav-icon">↪</span>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="app-main">
+
+        <div class="mobile-profile-toolbar">
+
+            <button id="mobile-more-button" class="mobile-more-button" type="button" aria-label="Open menu">
+                ☰
+            </button>
+
+            <div id="mobile-more-menu" class="mobile-more-menu" hidden>
+
+                <button type="button" data-view="notifications">
+                    ♡ Notifications
+                </button>
+
+                <button type="button" data-view="saved">
+                    ▱ Saved
+                </button>
+
+                <button id="mobile-theme-button" type="button">
+                    ☾ Dark Mode
+                </button>
+
+                <button id="mobile-logout-button" type="button">
+                    ↪ Logout
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- ========================= -->
+        <!-- HOME VIEW -->
+        <!-- ========================= -->
+
+        <section id="home-view" class="app-view" data-view-name="home">
+            <div class="view-header">
+                <h2>Home</h2>
+            </div>
+
+            <div class="feed-layout">
+
+                <div class="feed-column">
+                    <div id="feed"></div>
+                </div>
+
+                <aside class="feed-sidebar">
+                    <h3>Explore the world.</h3>
+
+                    <p>
+                        Share your trips and discover new places.
+                    </p>
+                </aside>
+
+            </div>
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- EXPLORE VIEW -->
+        <!-- ========================= -->
+
+        <section id="explore-view" class="app-view" data-view-name="explore">
+
+            <div class="explore-page">
+
+                <!-- HEADER -->
+
+                <div class="explore-header">
+
+                    <h2>Explore</h2>
+
+                    <p>
+                        Discover your next adventure.
+                    </p>
+
+                </div>
+
+
+                <!-- MAIN TRIP SEARCH -->
+
+                <div class="explore-search-card">
+
+                    <form id="explore-form">
+
+                        <div class="explore-main-search">
+
+                            <span class="explore-search-icon" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="7"></circle>
+                                    <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+                                </svg>
+                            </span>
+
+                            <input id="explore-search" type="text"
+                                placeholder="Search destinations, trips, or experiences...">
+
+                        </div>
+
+
+                        <div class="explore-filters">
+
+                            <select id="explore-sort">
+
+                                <option value="newest">
+                                    Newest
+                                </option>
+
+                                <option value="oldest">
+                                    Oldest
+                                </option>
+
+                                <option value="most_liked">
+                                    Most liked
+                                </option>
+
+                            </select>
+
+                            <button class="explore-search-button" type="submit">
+                                Explore
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- TRIP DISCOVERY -->
+
+                <div class="explore-section">
+
+                    <div class="explore-section-header">
+
+                        <div>
+
+                            <h3>Discover trips</h3>
+
+                            <p>
+                                Find inspiration from travelers around the world.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="explore-results"></div>
+
+                </div>
+
+
+                <!-- TRAVELER SEARCH -->
+
+                <div class="explore-section travelers-section">
+
+                    <div class="explore-section-header">
+
+                        <div>
+                            <h3>Find travelers</h3>
+
+                            <p>
+                                Search the Vortex community.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <form id="user-search-form" class="traveler-search-form">
+
+                        <input id="user-search-input" type="text" placeholder="Search by username" required>
+
+                        <button type="submit">
+                            Search
+                        </button>
+
+                    </form>
+
+
+                    <div id="user-search-results"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- MESSAGES VIEW -->
+        <!-- ========================= -->
+
+        <section id="messages-view" class="app-view" data-view-name="messages">
+
+            <div class="view-header messages-page-header">
+                <h2>Messages</h2>
+                <p>Connect with travelers and plan your next adventure.</p>
+            </div>
+
+            <div class="messages-layout">
+
+                <!-- LEFT: CONVERSATIONS -->
+                <div class="conversations-panel">
+
+                    <div class="messages-panel-header">
+                        <div>
+                            <h3>Conversations</h3>
+                            <p>Your recent messages</p>
+                        </div>
+
+                    </div>
+
+                    <div class="conversation-search">
+                        <span class="conversation-search-icon" aria-hidden="true">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <line x1="16.65" y1="16.65" x2="21" y2="21"></line>
+                            </svg>
+                        </span>
+
+                        <input type="text" id="conversation-search-input" placeholder="Search conversations"
+                            autocomplete="off">
+                    </div>
+
+                    <div id="conversations-container" class="conversations-list"></div>
+
+                </div>
+
+
+                <!-- RIGHT: CURRENT CHAT -->
+                <div id="conversation-container" class="conversation-panel">
+
+                    <div class="conversation-header">
+
+                        <button id="mobile-messages-back-button" class="mobile-messages-back-button" type="button"
+                            aria-label="Back to conversations">
+                            ←
+                        </button>
+
+                        <div id="conversation-profile-link" class="conversation-user-info" role="button" tabindex="0">
+
+                            <div id="conversation-header-avatar" class="conversation-avatar-placeholder">
+                                V
+                            </div>
+
+                            <div>
+                                <h3 id="conversation-title">
+                                    Select a conversation
+                                </h3>
+
+                                <p id="conversation-status" class="conversation-status">
+                                    Choose a traveler to start chatting
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MESSAGES -->
+                    <div id="messages-container" class="messages-list">
+
+                        <div class="empty-conversation-state">
+                            <div class="empty-message-icon">✉</div>
+
+                            <h3>Your messages</h3>
+
+                            <p>
+                                Select a conversation to view your messages.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <!-- MESSAGE INPUT -->
+                    <form id="message-form" class="message-composer">
+
+                        <input id="message-input" type="text" placeholder="Message..." autocomplete="off" required>
+
+                        <button type="submit">
+                            Send
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- NOTIFICATIONS VIEW -->
+        <!-- ========================= -->
+
+        <section id="notifications-view" class="app-view" data-view-name="notifications">
+
+            <div class="view-header">
+
+                <h2>Notifications</h2>
+
+                <p>
+                    Stay updated with activity from other travelers.
+                </p>
+
+            </div>
+
+
+            <div class="notifications-card">
+
+                <!-- TOP BAR -->
+                <div class="notifications-header">
+
+                    <div>
+                        <h3>Activity</h3>
+
+                        <p>
+                            Your latest Vortex activity
+                        </p>
+                    </div>
+
+
+                    <div class="notification-actions">
+
+                        <button id="load-notifications-button" type="button" title="Refresh notifications">
+                            ↻
+                        </button>
+
+                        <button id="mark-all-read-button" type="button">
+                            Mark all as read
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- UNREAD COUNT -->
+                <div class="notifications-summary">
+
+                    <span>
+                        Unread
+                    </span>
+
+                    <span id="notification-count" class="notification-count-badge">
+                        0
+                    </span>
+
+                </div>
+
+
+                <!-- JS INSERTS NOTIFICATIONS HERE -->
+                <!-- JS INSERTS NOTIFICATIONS HERE -->
+                <div id="notifications-container" class="notifications-list"></div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- PROFILE VIEW -->
+        <!-- ========================= -->
+
+        <section id="profile-view" class="app-view" data-view-name="profile">
+
+            <div class="view-header">
+                <h2>Profile</h2>
+                <p>Manage your profile and share your adventures.</p>
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- MY PROFILE -->
+            <!-- ========================= -->
+
+            <div id="my-profile-section" class="profile-main-card">
+
+                <div class="profile-top">
+
+                    <div class="profile-main-info">
+
+                        <div class="profile-name-row">
+
+                            <h3>My Profile</h3>
+
+                            <div class="profile-buttons">
+
+                                <button id="open-edit-profile-button" type="button">
+                                    Edit Profile
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div id="my-profile-container">
+
+                            <p class="profile-placeholder-text">
+                                Load your profile to see your information.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- EDIT PROFILE -->
+            <!-- ========================= -->
+
+            <div class="profile-edit-card" id="profile-edit-card" hidden>
+
+                <div class="profile-section-header">
+
+                    <div>
+                        <h3>Edit Profile</h3>
+
+                        <p>
+                            Update your public Vortex profile.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <form id="edit-profile-form">
+
+                    <div class="profile-form-group">
+
+                        <label for="edit-username">
+                            Username
+                        </label>
+
+                        <input id="edit-username" type="text" placeholder="Username">
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="edit-bio">
+                            Bio
+                        </label>
+
+                        <textarea id="edit-bio" placeholder="Tell travelers about yourself..."></textarea>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="edit-profile-picture">
+                            Profile Picture
+                        </label>
+
+                        <div class="profile-picture-editor">
+
+                            <div class="profile-picture-preview-wrapper">
+
+                                <img id="profile-picture-preview" class="profile-picture-preview"
+                                    alt="Profile picture preview" hidden>
+
+                                <div id="profile-picture-placeholder" class="profile-picture-placeholder">
+                                    No photo
+                                </div>
+
+                            </div>
+
+                            <div class="profile-picture-upload-controls">
+
+                                <label for="edit-profile-picture" class="profile-picture-upload-button">
+                                    Choose photo
+                                </label>
+
+                                <input id="edit-profile-picture" type="file" accept="image/*" hidden>
+
+                                <button id="remove-profile-picture-button" type="button"
+                                    class="remove-profile-picture-button">
+                                    Remove
+                                </button>
+
+                                <p class="profile-picture-upload-hint">
+                                    Preview your profile photo before saving.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-form-group">
+
+                        <label for="edit-home-country">
+                            Home Country
+                        </label>
+
+                        <input id="edit-home-country" type="text" placeholder="Home country">
+
+                    </div>
+
+
+                    <div class="profile-form-actions">
+
+                        <button id="cancel-edit-profile-button" type="button">
+                            Cancel
+                        </button>
+
+                        <button type="submit">
+                            Save Changes
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <p id="edit-profile-message"></p>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- SEARCHED USER PROFILE -->
+            <!-- ========================= -->
+
+            <div id="traveler-profile-section" class="profile-discovered-section" hidden>
+
+                <h3>Traveler Profile</h3>
+
+                <div id="profile-container">
+
+                    <p>
+                        Search for a traveler in Explore to view their profile.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- ========================= -->
+            <!-- TRAVELER TRIPS -->
+            <!-- ========================= -->
+
+            <div id="profile-trips-section" class="profile-trips-section" hidden>
+
+                <div class="profile-trips-header">
+
+                    <div>
+                        <h3>Trips</h3>
+                        <p>Adventures shared by this traveler.</p>
+                    </div>
+
+                </div>
+
+                <div id="profile-trips-container" class="profile-trips-grid">
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- SAVED VIEW -->
+        <!-- ========================= -->
+
+        <section id="saved-view" class="app-view" data-view-name="saved">
+
+            <div class="view-header">
+                <h2>Saved</h2>
+                <p>Your bookmarked trips, all in one place.</p>
+            </div>
+
+            <div class="saved-page">
+
+                <div class="saved-header">
+                    <h3>Saved Trips</h3>
+                    <p>Trips you bookmarked for later.</p>
+                </div>
+
+                <div id="saved-posts-container">
+                    <p>Loading saved trips...</p>
+                </div>
+
+            </div>
+
+        </section>
+        <!-- ========================= -->
+        <!-- CREATE TRIP -->
+        <!-- ========================= -->
+
+        <section id="create-post-view" class="app-view" data-view-name="create">
+
+            <div class="create-page">
+
+                <!-- CREATE HEADER -->
+                <div class="create-header">
+
+                    <div>
+                        <h2>Create a new trip</h2>
+
+                        <p>
+                            Share your adventure with the Vortex community.
+                        </p>
+                    </div>
+
+
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- CREATE POST FORM -->
+                <!-- ========================= -->
+
+                <form id="create-post-form" class="create-trip-form">
+
+
+                    <!-- ========================= -->
+                    <!-- LEFT SIDE: PHOTOS -->
+                    <!-- ========================= -->
+
+                    <div class="create-photo-panel">
+
+                        <div class="photo-upload-area">
+
+                            <div class="upload-icon">
+                                +
+                            </div>
+
+                            <h3>
+                                Add your trip photos
+                            </h3>
+
+                            <p>
+                                Share the best moments from your adventure.
+                            </p>
+
+                            <label for="post-image" class="photo-upload-button">
+                                Select photos
+                            </label>
+
+                            <input id="post-image" type="file" accept="image/*" multiple>
+
+                            <p class="upload-hint">
+                                You can select multiple photos.
+                            </p>
+
+                            <!-- IMAGE PREVIEW -->
+
+                            <div id="image-preview-section" class="image-preview-section" hidden>
+
+                                <div class="image-preview-header">
+
+                                    <span id="image-preview-count"></span>
+
+                                    <button id="clear-images-button" type="button">
+                                        Clear all
+                                    </button>
+
+                                </div>
+
+                                <div id="image-preview-container" class="image-preview-container"></div>
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ========================= -->
+                    <!-- RIGHT SIDE: TRIP DETAILS -->
+                    <!-- ========================= -->
+
+                    <div class="create-details-panel">
+
+
+                        <!-- TRIP TITLE -->
+
+                        <div class="create-field">
+
+                            <label for="post-title">
+                                Trip title
+                            </label>
+
+                            <input id="post-title" type="text" placeholder="Give your adventure a name" required>
+
+                        </div>
+
+
+                        <!-- COUNTRY + CITY -->
+
+                        <div class="create-row">
+
+                            <div class="create-field">
+
+                                <label for="post-country">
+                                    Country
+                                </label>
+
+                                <input id="post-country" type="text" placeholder="United States">
+
+                            </div>
+
+
+                            <div class="create-field">
+
+                                <label for="post-city">
+                                    City
+                                </label>
+
+                                <input id="post-city" type="text" placeholder="Los Angeles">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TRIP TYPE -->
+
+                        <div class="create-field">
+
+                            <label for="post-trip-type">
+                                Trip type
+                            </label>
+
+                            <input id="post-trip-type" type="text" placeholder="Adventure, road trip, beach...">
+
+                        </div>
+
+
+                        <!-- STORY -->
+
+                        <div class="create-field">
+
+                            <label for="post-content">
+                                Your story
+                            </label>
+
+                            <textarea id="post-content" placeholder="Tell everyone about your trip..."
+                                required></textarea>
+
+                        </div>
+
+
+                        <!-- DATES -->
+
+                        <div class="create-row">
+
+                            <div class="create-field">
+
+                                <label for="post-start-date">
+                                    Start date
+                                </label>
+
+                                <input id="post-start-date" type="date">
+
+                            </div>
+
+
+                            <div class="create-field">
+
+                                <label for="post-end-date">
+                                    End date
+                                </label>
+
+                                <input id="post-end-date" type="date">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TAGS -->
+
+                        <div class="create-field">
+
+                            <label for="post-tags">
+                                Tags
+                            </label>
+
+                            <input id="post-tags" type="text" placeholder="beach, hiking, california">
+
+                            <small>
+                                Separate tags with commas.
+                            </small>
+
+                        </div>
+
+
+                        <!-- SUBMIT -->
+
+                        <button class="primary-button create-submit-button" type="submit">
+                            Share trip
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================= -->
+        <!-- AUTH -->
+        <!-- ========================= -->
+
+        <section id="auth-view" class="app-view" data-view-name="auth">
+
+            <div class="auth-container">
+
+
+                <!-- LOGIN -->
+
+                <div class="content-card">
+
+                    <h2>Login</h2>
+
+                    <form id="login-form">
+
+                        <label for="email">
+                            Email
+                        </label>
+
+                        <input type="email" id="email" placeholder="Enter your email" required>
+
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <input type="password" id="password" placeholder="Enter your password" required>
+
+
+                        <button type="submit">
+                            Login
+                        </button>
+
+                        <p id="login-message"></p>
+
+                        <button id="resend-verification-button" type="button" hidden>
+                            Resend verification email
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- REGISTER -->
+
+                <div class="content-card">
+
+                    <h2>Create Account</h2>
+
+                    <form id="register-form">
+
+                        <input id="register-email" type="email" placeholder="Email" required>
+
+                        <input id="register-username" type="text" placeholder="Username" required>
+
+                        <input id="register-password" type="password" placeholder="Password" required>
+
+                        <button type="submit">
+                            Create Account
+                        </button>
+
+                    </form>
+
+                    <p id="register-message"></p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- KEEP ORIGINAL LOGOUT BUTTON -->
+        <!-- Existing auth.js may depend on this ID -->
+
+        <button id="logout-button" type="button">
+            Logout
+        </button>
+
+    </main>
+
+    <!-- ========================================= -->
+    <!-- PROFILE POST VIEWER -->
+    <!-- ========================================= -->
+
+    <div id="profile-post-modal" class="profile-post-modal" hidden>
+
+        <div class="profile-post-modal-backdrop"></div>
+
+        <div class="profile-post-modal-content">
+
+            <button id="close-profile-post-modal" class="profile-post-modal-close" type="button"
+                aria-label="Close post">
+                ×
+            </button>
+
+            <!-- LEFT SIDE: IMAGES -->
+            <div class="profile-post-modal-media">
+
+                <img id="profile-post-modal-image" alt="Trip photo">
+
+                <button id="profile-post-modal-prev" class="profile-post-modal-arrow profile-post-modal-prev"
+                    type="button" aria-label="Previous photo">
+                    ‹
+                </button>
+
+                <button id="profile-post-modal-next" class="profile-post-modal-arrow profile-post-modal-next"
+                    type="button" aria-label="Next photo">
+                    ›
+                </button>
+
+                <div id="profile-post-modal-counter" class="profile-post-modal-counter">
+                    1 / 1
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE: POST INFORMATION -->
+            <div class="profile-post-modal-details">
+
+                <div class="profile-post-modal-header">
+
+                    <h3 id="profile-post-modal-username">
+                        Traveler
+                    </h3>
+
+                    <p id="profile-post-modal-location"></p>
+
+                </div>
+
+                <div class="profile-post-modal-body">
+
+                    <h2 id="profile-post-modal-title"></h2>
+
+                    <p id="profile-post-modal-story"></p>
+
+                    <div id="profile-post-modal-tags" class="profile-post-modal-tags"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/posts.js"></script>
+    <script src="js/profiles.js"></script>
+    <script src="js/feed.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/messages.js"></script>
+    <script src="js/saved.js"></script>
+    <script src="navigation.js"></script>
+
+</body>
+
+</html>

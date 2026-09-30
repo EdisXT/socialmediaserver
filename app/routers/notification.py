@@ -74,7 +74,7 @@ def mark_all_notifications_read(
 
     db.commit()
 
-    return {"message": "All notifications marked as read"}\
+    return {"message": "All notifications marked as read"}
 
 @router.get("/unread-count")
 def get_unread_notification_count(

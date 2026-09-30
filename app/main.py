@@ -14,15 +14,12 @@ from .config import settings
 
 app = FastAPI()
 
-orgins = ["https://www.google.com", "https://youtube.com"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=orgins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+origins = [
+    "https://emberlylife.net",
+    "https://www.emberlylife.net",
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+]
 
 app.include_router(auth.router)
 app.include_router(vote.router)

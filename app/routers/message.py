@@ -12,7 +12,6 @@ router = APIRouter(
     tags=["Messages"]
 )
 
-
 # SEND A MESSAGE
 @router.post(
     "/",
@@ -40,14 +39,26 @@ def send_message(
             detail="You cannot message yourself"
         )
 
+    # Create the message
     new_message = models.Message(
         sender_id=current_user.id,
         receiver_id=message.receiver_id,
         content=message.content
     )
 
+    # Create a notification for the receiver
+    new_notification = models.Notification(
+        user_id=message.receiver_id,
+        actor_id=current_user.id,
+        type="message"
+    )
+
+    # Save both together
     db.add(new_message)
+    db.add(new_notification)
+
     db.commit()
+
     db.refresh(new_message)
 
     return new_message
@@ -109,18 +120,34 @@ def get_conversations(
 
     return conversations
 
-
 # GET MESSAGE HISTORY WITH ONE USER
 @router.get(
     "/{user_id}",
-    response_model=List[schemas.MessageOut]
+    response_model=schemas.ConversationHistory
 )
 def get_conversation(
     user_id: int,
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user)
 ):
-    # Mark messages FROM the other user as read
+    # Find unread messages BEFORE marking them as read.
+    unread_messages = (
+        db.query(models.Message)
+        .filter(
+            models.Message.sender_id == user_id,
+            models.Message.receiver_id == current_user.id,
+            models.Message.is_read == False
+        )
+        .order_by(models.Message.created_at.asc())
+        .all()
+    )
+
+    first_unread_message_id = None
+
+    if unread_messages:
+        first_unread_message_id = unread_messages[0].id
+
+    # Mark those messages as read.
     db.query(models.Message).filter(
         models.Message.sender_id == user_id,
         models.Message.receiver_id == current_user.id,
@@ -132,20 +159,26 @@ def get_conversation(
 
     db.commit()
 
-    # Get messages in both directions
-    messages = db.query(models.Message).filter(
-        or_(
-            and_(
-                models.Message.sender_id == current_user.id,
-                models.Message.receiver_id == user_id
-            ),
-            and_(
-                models.Message.sender_id == user_id,
-                models.Message.receiver_id == current_user.id
+    # Get full conversation in chronological order.
+    messages = (
+        db.query(models.Message)
+        .filter(
+            or_(
+                and_(
+                    models.Message.sender_id == current_user.id,
+                    models.Message.receiver_id == user_id
+                ),
+                and_(
+                    models.Message.sender_id == user_id,
+                    models.Message.receiver_id == current_user.id
+                )
             )
         )
-    ).order_by(
-        models.Message.created_at.asc()
-    ).all()
+        .order_by(models.Message.created_at.asc())
+        .all()
+    )
 
-    return messages
+    return {
+        "messages": messages,
+        "first_unread_message_id": first_unread_message_id
+    }

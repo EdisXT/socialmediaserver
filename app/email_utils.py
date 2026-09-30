@@ -6,7 +6,7 @@ from .config import settings
 
 def send_verification_email(email: str, token: str):
     verification_url = (
-        f"http://127.0.0.1:8000/users/verify-email?token={token}"
+        f"{settings.api_url}/users/verify-email?token={token}"
     )
 
     message = EmailMessage()
@@ -37,7 +37,7 @@ This link expires in 30 minutes.
 
 def send_password_reset_email(email: str, token: str):
     reset_url = (
-        f"http://127.0.0.1:8000/reset-password?token={token}"
+        f"{settings.frontend_url}/reset-password?token={token}"
     )
 
     message = EmailMessage()
