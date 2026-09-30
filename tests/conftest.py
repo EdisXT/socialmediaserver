@@ -3,7 +3,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app import models
+from app import models, email_utils
 from app.main import app
 from app.oauth2 import create_access_token
 from app.config import settings
@@ -40,6 +40,19 @@ def session():
     finally:
         db.close()
 
+@pytest.fixture(autouse=True)
+def mock_email_functions(monkeypatch):
+    monkeypatch.setattr(
+        email_utils,
+        "send_verification_email",
+        lambda *args, **kwargs: None
+    )
+
+    monkeypatch.setattr(
+        email_utils,
+        "send_password_reset_email",
+        lambda *args, **kwargs: None
+    )
 
 @pytest.fixture()
 def client(session):
