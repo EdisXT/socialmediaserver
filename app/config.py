@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     email_username: str
     email_password: str
+    resend_api_key: str
 
     frontend_url: str = "http://127.0.0.1:5500"
     api_url: str = "http://127.0.0.1:8000"
