@@ -788,26 +788,362 @@ body {
 ======================================== */
 
 #auth-view {
-    max-width: 950px;
+    width: 100%;
+    max-width: none;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+.auth-page {
+    width: 100%;
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+
+    background: #111111;
+}
+
+
+/* ========================================
+   LEFT VISUAL
+======================================== */
+
+.auth-visual {
+    position: relative;
+
+    min-height: 100vh;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    padding: 48px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.05),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("images/auth-background.jpg");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.auth-brand {
+    position: relative;
+    z-index: 2;
+}
+
+.auth-logo {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: white;
+}
+
+
+/* ========================================
+   RIGHT AUTH PANEL
+======================================== */
+
+.auth-panel {
     min-height: 100vh;
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    padding: 48px;
+
+    background: #111111;
 }
 
 .auth-container {
     width: 100%;
-    max-width: 420px;
+    max-width: 430px;
 }
 
-#auth-view .content-card {
-    padding: 30px;
+
+/* ========================================
+   AUTH CARD
+======================================== */
+
+.auth-card {
+    width: 100%;
+
+    animation: authFadeIn 0.35s ease;
 }
 
-#auth-view h2 {
-    margin-top: 0;
+.auth-card-hidden {
+    display: none;
 }
+
+.auth-card-header {
+    margin-bottom: 32px;
+}
+
+.auth-card-header h2 {
+    margin: 0 0 8px;
+
+    font-size: 34px;
+    font-weight: 650;
+    letter-spacing: -1px;
+
+    color: #ffffff;
+}
+
+.auth-card-header p {
+    margin: 0;
+
+    font-size: 15px;
+    color: #8d8d8d;
+}
+
+
+
+/* ========================================
+   FORM
+======================================== */
+
+#auth-view form {
+    display: flex;
+    flex-direction: column;
+}
+
+#auth-view label {
+    margin-bottom: 8px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    color: #d6d6d6;
+}
+
+#auth-view input {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-bottom: 20px;
+    padding: 14px 15px;
+
+    border: 1px solid #343434;
+    border-radius: 8px;
+
+    background: #191919;
+    color: #ffffff;
+
+    font-size: 15px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#auth-view input::placeholder {
+    color: #666666;
+}
+
+#auth-view input:hover {
+    border-color: #4a4a4a;
+}
+
+#auth-view input:focus {
+    outline: none;
+
+    border-color: #777777;
+    background: #1c1c1c;
+
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
+
+/* ========================================
+   PRIMARY BUTTON
+======================================== */
+
+.auth-primary-button {
+    width: 100%;
+
+    margin-top: 4px;
+    padding: 14px 18px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #111111;
+
+    font-size: 15px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.auth-primary-button:hover {
+    background: #e8e8e8;
+    transform: translateY(-1px);
+}
+
+.auth-primary-button:active {
+    transform: scale(0.985);
+}
+
+
+/* ========================================
+   LOGIN / REGISTER SWITCH
+======================================== */
+
+.auth-switch {
+    margin-top: 28px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+
+    font-size: 14px;
+    color: #858585;
+}
+
+.auth-switch button {
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #ffffff;
+
+    font: inherit;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.auth-switch button:hover {
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   AUTH MESSAGES
+======================================== */
+
+#login-message,
+#register-message {
+    margin: 14px 0 0;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   RESEND VERIFICATION
+======================================== */
+
+#resend-verification-button {
+    margin-top: 12px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+#resend-verification-button:hover {
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   AUTH ANIMATION
+======================================== */
+
+@keyframes authFadeIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* ========================================
+   AUTH RESPONSIVE
+======================================== */
+
+@media (max-width: 850px) {
+
+    .auth-page {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-visual {
+        min-height: 220px;
+        padding: 30px;
+
+        background-position: center 55%;
+    }
+
+    .auth-panel {
+        min-height: calc(100vh - 220px);
+        padding: 45px 24px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .auth-visual {
+        min-height: 160px;
+        padding: 24px;
+    }
+
+    .auth-logo {
+        font-size: 25px;
+    }
+
+    .auth-panel {
+        min-height: calc(100vh - 160px);
+        padding: 36px 22px;
+    }
+
+    .auth-card-header h2 {
+        font-size: 29px;
+    }
+
+}
+
+
+/* Remove sidebar spacing while authentication is visible */
 
 body:has(#auth-view[style*="display: block"]) .app-main {
     margin-left: 0;

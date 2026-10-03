@@ -905,73 +905,166 @@
 
         <section id="auth-view" class="app-view" data-view-name="auth">
 
-            <div class="auth-container">
+            <div class="auth-page">
 
+                <!-- LEFT SIDE: IMAGE -->
 
-                <!-- LOGIN -->
+                <div class="auth-visual">
 
-                <div class="content-card">
+                    <div class="auth-brand">
 
-                    <h2>Login</h2>
+                        <div class="auth-logo">
+                            Vortex
+                        </div>
 
-                    <form id="login-form">
-
-                        <label for="email">
-                            Email
-                        </label>
-
-                        <input type="email" id="email" placeholder="Enter your email" required>
-
-
-                        <label for="password">
-                            Password
-                        </label>
-
-                        <input type="password" id="password" placeholder="Enter your password" required>
-
-
-                        <button type="submit">
-                            Login
-                        </button>
-
-                        <p id="login-message"></p>
-
-                        <button id="resend-verification-button" type="button" hidden>
-                            Resend verification email
-                        </button>
-
-                    </form>
+                    </div>
 
                 </div>
 
 
-                <!-- REGISTER -->
+                <!-- RIGHT SIDE: AUTH -->
 
-                <div class="content-card">
+                <div class="auth-panel">
 
-                    <h2>Create Account</h2>
+                    <div class="auth-container">
 
-                    <form id="register-form">
+                        <!-- LOGIN -->
 
-                        <input id="register-email" type="email" placeholder="Email" required>
+                        <div id="login-card" class="auth-card">
 
-                        <input id="register-username" type="text" placeholder="Username" required>
+                            <div class="auth-card-header">
 
-                        <input id="register-password" type="password" placeholder="Password" required>
+                                <h2>Welcome back</h2>
 
-                        <button type="submit">
-                            Create Account
-                        </button>
+                                <p>
+                                    Sign in to your account.
+                                </p>
 
-                    </form>
+                            </div>
 
-                    <p id="register-message"></p>
+
+                            <form id="login-form">
+
+                                <label for="email">
+                                    Email
+                                </label>
+
+                                <input type="email" id="email" placeholder="Enter your email" required>
+
+
+                                <label for="password">
+                                    Password
+                                </label>
+
+                                <input type="password" id="password" placeholder="Enter your password" required>
+
+
+                                <button class="auth-primary-button" type="submit">
+                                    Login
+                                </button>
+
+
+                                <p id="login-message"></p>
+
+
+                                <button id="resend-verification-button" type="button" hidden>
+                                    Resend verification email
+                                </button>
+
+                            </form>
+
+
+                            <div class="auth-switch">
+
+                                <span>
+                                    Don't have an account?
+                                </span>
+
+                                <button id="show-register-button" type="button">
+                                    Create account
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- REGISTER -->
+
+                        <div id="register-card" class="auth-card auth-card-hidden">
+
+                            <div class="auth-card-header">
+
+                                <h2>Create account</h2>
+
+                                <p>
+                                    Create an account to get started.
+                                </p>
+
+                            </div>
+
+
+                            <form id="register-form">
+
+                                <label for="register-email">
+                                    Email
+                                </label>
+
+                                <input id="register-email" type="email" placeholder="Enter your email" required>
+
+
+                                <label for="register-username">
+                                    Username
+                                </label>
+
+                                <input id="register-username" type="text" placeholder="Enter a username" required>
+
+
+                                <label for="register-password">
+                                    Password
+                                </label>
+
+                                <input id="register-password" type="password" placeholder="Enter a password" required>
+
+
+                                <button class="auth-primary-button" type="submit">
+                                    Create Account
+                                </button>
+
+                            </form>
+
+
+                            <p id="register-message"></p>
+
+
+                            <div class="auth-switch">
+
+                                <span>
+                                    Already have an account?
+                                </span>
+
+                                <button id="show-login-button" type="button">
+                                    Login
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             </div>
 
         </section>
+
+
+        <!-- KEEP ORIGINAL LOGOUT BUTTON -->
+
+        <button id="logout-button" type="button">
+            Logout
+        </button>
 
 
         <!-- KEEP ORIGINAL LOGOUT BUTTON -->

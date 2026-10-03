@@ -36,10 +36,12 @@ loginForm.addEventListener("submit", function (event) {
 
 
     // Clear previous message
+
     loginMessage.textContent = "";
 
-    // Hide resend button until we know
-    // the account actually needs verification
+
+    // Hide resend button until needed
+
     resendVerificationButton.hidden = true;
 
 
@@ -81,6 +83,7 @@ loginForm.addEventListener("submit", function (event) {
 
 
                 // Email has not been verified
+
                 if (
                     result.status === 403 &&
                     result.data.detail ===
@@ -97,6 +100,7 @@ loginForm.addEventListener("submit", function (event) {
 
 
                 // Other login errors
+
                 loginMessage.textContent =
                     result.data.detail ||
                     "Email or password is incorrect.";
@@ -145,7 +149,6 @@ loginForm.addEventListener("submit", function (event) {
         });
 
 });
-
 
 // ========================================
 // RESEND VERIFICATION EMAIL
@@ -386,3 +389,60 @@ logoutButton.addEventListener("click", function () {
     window.location.reload();
 
 });
+
+// ========================================
+// LOGIN / REGISTER CARD SWITCH
+// ========================================
+
+const loginCard =
+    document.getElementById("login-card");
+
+const registerCard =
+    document.getElementById("register-card");
+
+const showRegisterButton =
+    document.getElementById("show-register-button");
+
+const showLoginButton =
+    document.getElementById("show-login-button");
+
+
+if (
+    loginCard &&
+    registerCard &&
+    showRegisterButton &&
+    showLoginButton
+) {
+
+    showRegisterButton.addEventListener(
+        "click",
+        function () {
+
+            loginCard.classList.add(
+                "auth-card-hidden"
+            );
+
+            registerCard.classList.remove(
+                "auth-card-hidden"
+            );
+
+        }
+    );
+
+
+    showLoginButton.addEventListener(
+        "click",
+        function () {
+
+            registerCard.classList.add(
+                "auth-card-hidden"
+            );
+
+            loginCard.classList.remove(
+                "auth-card-hidden"
+            );
+
+        }
+    );
+
+}
